@@ -4,7 +4,7 @@ import {
   fetchSettings,
   savePlayerResult,
   fetchActivePlayers,
-} from "./lib/api";
+} from "../lib/api"; // FIXED
 import QuestionCard from "./QuestionCard";
 import { uid } from "../utils/helpers";
 
@@ -34,9 +34,6 @@ export default function QuizRound() {
     loadQuestions(round);
   }, [round]);
 
-  /* ========================================================
-     LOAD QUESTIONS BY ROUND — BENAR & TANPA FALLBACK PALSU
-  ========================================================== */
   async function loadQuestions(r) {
     setLoadingQ(true);
 
@@ -57,9 +54,6 @@ export default function QuizRound() {
     setLoadingQ(false);
   }
 
-  /* ========================================================
-     HANDLE ANSWER
-  ========================================================== */
   function handleAnswer(qId, choice, timeTaken) {
     setAnswers((prev) => ({
       ...prev,
@@ -81,9 +75,6 @@ export default function QuizRound() {
     return { score, totalTime };
   }
 
-  /* ========================================================
-     FINISH ROUND
-  ========================================================== */
   async function finishRound() {
     if (!playerName) {
       alert("Masukkan nama peserta dulu.");
@@ -137,9 +128,6 @@ export default function QuizRound() {
     setRound((r) => r + 1);
   }
 
-  /* ========================================================
-     RENDER
-  ========================================================== */
   return (
     <div className="card">
       <h3>Babak {round}</h3>
