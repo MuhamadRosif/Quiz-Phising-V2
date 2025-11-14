@@ -1,22 +1,28 @@
 import React, { useEffect, useState } from "react";
 
 export default function LoadingScreen() {
-  const [startBlurOut, setStartBlurOut] = useState(false);
+  const [startFade, setStartFade] = useState(false);
   const [hide, setHide] = useState(false);
+  const [logoFocused, setLogoFocused] = useState(false);
 
   useEffect(() => {
-    // Blur in → fokus → glow
-    const t1 = setTimeout(() => {
-      setStartBlurOut(true); // mulai keluar
-    }, 2600); // Durasi dibuat panjang dan cinematic
+    // Logo butuh waktu agar blur hilang sempurna
+    const tFocus = setTimeout(() => {
+      setLogoFocused(true);
+    }, 900); // waktu fokus lebih dulu sebelum fade
 
-    const t2 = setTimeout(() => {
-      setHide(true); // hilang total
-    }, 3400);
+    const tFade = setTimeout(() => {
+      setStartFade(true);
+    }, 2400); // waktu tampil cinematic
+
+    const tHide = setTimeout(() => {
+      setHide(true);
+    }, 3300);
 
     return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
+      clearTimeout(tFocus);
+      clearTimeout(tFade);
+      clearTimeout(tHide);
     };
   }, []);
 
@@ -32,57 +38,65 @@ export default function LoadingScreen() {
         alignItems: "center",
         justifyContent: "center",
         zIndex: 99999,
-        backdropFilter: startBlurOut ? "blur(0px)" : "blur(12px)",
-        transition: "backdrop-filter 1.2s ease, opacity 1s ease",
-        opacity: startBlurOut ? 0 : 1,
-        background: "linear-gradient(130deg, #0f172a, #1e293b, #0f172a)",
-        backgroundSize: "300% 300%",
-        animation: "gradientMove 7s ease infinite",
+        opacity: startFade ? 0 : 1,
+        transition: "opacity 1.1s ease",
+        background: "linear-gradient(135deg, #0f172a, #1e293b, #0f172a)",
+        backgroundSize: "280% 280%",
+        animation: "gradientFlow 8s ease infinite",
+        backdropFilter: startFade ? "blur(0px)" : "blur(6px)",
       }}
     >
-      {/* Logo cinematic */}
+      {/* Logo */}
       <img
-        src="/logo.png"
-        alt="Loading"
+        src="/logo-university.png"
+        alt="Logo Loading"
         style={{
-          width: 150,
-          height: 150,
+          width: 155,
+          height: 155,
           objectFit: "contain",
-          borderRadius: 16,
-          filter: startBlurOut ? "blur(6px)" : "blur(0px)",
-          opacity: startBlurOut ? 0 : 1,
-          transition: "opacity 1s ease, filter 1.2s ease",
-          animation:
-            "fadeInScale 1.6s ease forwards, pulseGlow 2.4s infinite ease-in-out",
+          borderRadius: 18,
+          opacity: startFade ? 0 : 1,
+          filter: logoFocused ? "blur(0px)" : "blur(12px)",
+          transform: startFade
+            ? "scale(0.92)"
+            : logoFocused
+            ? "scale(1)"
+            : "scale(0.75)",
+          transition:
+            "filter 1.2s ease, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease",
+          // Glow hanya aktif setelah logo benar-benar fokus
+          boxShadow: logoFocused
+            ? "0 0 35px rgba(96,165,250,0.45), 0 0 60px rgba(96,165,250,0.25)"
+            : "0 0 0 rgba(0,0,0,0)",
         }}
       />
 
-      {/* Text cinematic */}
+      {/* Loading Text */}
       <div
         style={{
-          marginTop: 30,
+          marginTop: 28,
           fontSize: 20,
           fontWeight: 500,
+          opacity: startFade ? 0 : 1,
+          filter: logoFocused ? "blur(0px)" : "blur(4px)",
           color: "var(--muted)",
-          opacity: startBlurOut ? 0 : 1,
-          filter: startBlurOut ? "blur(4px)" : "blur(0px)",
-          animation: "fadeSlideUp 1.8s ease forwards",
-          transition: "opacity 1s ease, filter 1.2s ease",
+          transition: "opacity 0.8s ease, filter 0.9s ease",
+          animation: logoFocused ? "floatText 2.2s infinite ease-in-out" : "none",
         }}
       >
         Loading...
       </div>
 
-      {/* Progress bar smooth */}
+      {/* Progress Bar */}
       <div
         style={{
           width: 200,
-          height: 6,
+          height: 7,
           borderRadius: 6,
           overflow: "hidden",
-          marginTop: 22,
+          marginTop: 20,
           background: "rgba(255,255,255,0.08)",
-          opacity: startBlurOut ? 0 : 1,
+          opacity: startFade ? 0 : 1,
           transition: "opacity 1s ease",
         }}
       >
@@ -91,40 +105,23 @@ export default function LoadingScreen() {
             width: "100%",
             height: "100%",
             background: "var(--accent)",
-            animation: "progressSmooth 2s infinite ease-in-out",
+            animation: "progressSmooth 2.1s infinite ease-in-out",
           }}
         />
       </div>
 
-      {/* KEYFRAMES */}
       <style>
         {`
-          @keyframes gradientMove {
+          @keyframes gradientFlow {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
           }
 
-          @keyframes fadeInScale {
-            0% { opacity: 0; transform: scale(0.65); filter: blur(12px); }
-            50% { opacity: 0.6; transform: scale(0.85); filter: blur(4px); }
-            100% { opacity: 1; transform: scale(1); filter: blur(0px); }
-          }
-
-          @keyframes fadeSlideUp {
-            0% { opacity: 0; transform: translateY(12px); filter: blur(10px); }
-            100% { opacity: 1; transform: translateY(0); filter: blur(0px); }
-          }
-
-          @keyframes pulseGlow {
-            0%, 100% {
-              box-shadow: 0 0 20px rgba(96,165,250,0.3),
-                          0 0 35px rgba(96,165,250,0.15);
-            }
-            50% {
-              box-shadow: 0 0 40px rgba(96,165,250,0.6),
-                          0 0 70px rgba(96,165,250,0.3);
-            }
+          @keyframes floatText {
+            0% { transform: translateY(0); opacity: .85; }
+            50% { transform: translateY(-4px); opacity: 1; }
+            100% { transform: translateY(0); opacity: .85; }
           }
 
           @keyframes progressSmooth {
