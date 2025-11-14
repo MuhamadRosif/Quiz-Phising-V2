@@ -12,15 +12,22 @@ export default function AdminPanel() {
   const [b, setB] = useState("");
   const [c, setC] = useState("");
   const [d, setD] = useState("");
-  const [correct, setCorrect] = useState(""); // <-- NEW (jawaban benar)
+  const [correct, setCorrect] = useState("");
 
-  // Load questions on enter
+  // Loading state untuk tombol
+  const [loading, setLoading] = useState(false);
+
+  // Load questions on mount
   useEffect(() => {
     fetchQuestions();
   }, []);
 
   async function fetchQuestions() {
-    const { data } = await supabase.from("questions").select("*").order("id");
+    const { data, error } = await supabase.from("questions").select("*").order("id");
+    if (error) {
+      console.error("Error fetching questions:", error);
+      return;
+    }
     if (data) setQuestions(data);
   }
 
@@ -35,37 +42,58 @@ export default function AdminPanel() {
       return;
     }
 
-    const { error } = await supabase.from("questions").insert({
-      text: questionText,
-      a,
-      b,
-      c,
-      d,
-      correct
-    });
+    setLoading(true);
+    try {
+      console.log("Menambahkan soal:", { questionText, a, b, c, d, correct });
 
-    if (!error) {
-      alert("Soal ditambahkan!");
-      setQuestionText("");
-      setA("");
-      setB("");
-      setC("");
-      setD("");
-      setCorrect("");
-      fetchQuestions();
+      const { data, error } = await supabase
+        .from("questions")
+        .insert({
+          text: questionText,
+          a,
+          b,
+          c,
+          d,
+          correct
+        })
+        .select(); // select() biar langsung dapet data yang baru ditambahkan
+
+      if (error) {
+        console.error("Error menambahkan soal:", error);
+        alert("Gagal menambahkan soal. Cek console.");
+      } else {
+        alert("Soal berhasil ditambahkan!");
+        // Reset semua input
+        setQuestionText("");
+        setA("");
+        setB("");
+        setC("");
+        setD("");
+        setCorrect("");
+        // Refresh daftar soal
+        fetchQuestions();
+      }
+    } catch (err) {
+      console.error("Catch error:", err);
+      alert("Terjadi kesalahan. Cek console.");
+    } finally {
+      setLoading(false);
     }
   }
 
   async function deleteQuestion(id) {
     if (!confirm("Hapus soal ini?")) return;
 
-    await supabase.from("questions").delete().eq("id", id);
+    const { error } = await supabase.from("questions").delete().eq("id", id);
+    if (error) console.error("Error deleting question:", error);
     fetchQuestions();
   }
 
   async function deleteAll() {
     if (!confirm("HAPUS SEMUA SOAL?")) return;
-    await supabase.from("questions").delete().neq("id", 0);
+
+    const { error } = await supabase.from("questions").delete().neq("id", 0);
+    if (error) console.error("Error deleting all questions:", error);
     fetchQuestions();
   }
 
@@ -81,7 +109,11 @@ export default function AdminPanel() {
           onChange={(e) => setPassword(e.target.value)}
           style={{ width: "100%", marginTop: 10 }}
         />
-        <button className="btn" onClick={handleLogin} style={{ marginTop: 14, width: "100%" }}>
+        <button
+          className="btn"
+          onClick={handleLogin}
+          style={{ marginTop: 14, width: "100%" }}
+        >
           Login
         </button>
       </div>
@@ -89,7 +121,6 @@ export default function AdminPanel() {
 
   return (
     <div className="admin-panel">
-
       <div className="card">
         <h2>Tambah Soal</h2>
 
@@ -106,7 +137,6 @@ export default function AdminPanel() {
         <input className="input" placeholder="Pilihan C" value={c} onChange={(e) => setC(e.target.value)} />
         <input className="input" placeholder="Pilihan D" value={d} onChange={(e) => setD(e.target.value)} />
 
-        {/* Selector Jawaban Benar */}
         <select
           className="input"
           value={correct}
@@ -120,11 +150,15 @@ export default function AdminPanel() {
           <option value="d">D</option>
         </select>
 
-        <button className="btn" onClick={addQuestion} style={{ marginTop: 14 }}>
-          Tambah Soal
+        <button
+          className="btn"
+          onClick={addQuestion}
+          style={{ marginTop: 14 }}
+          disabled={loading}
+        >
+          {loading ? "Menambahkan..." : "Tambah Soal"}
         </button>
 
-        {/* DELETE ALL BUTTON */}
         <button
           className="btn-ghost"
           onClick={deleteAll}
@@ -140,13 +174,11 @@ export default function AdminPanel() {
         {questions.map((q) => (
           <div key={q.id} className="q-card" style={{ marginBottom: 12 }}>
             <div><b>{q.id}. </b> {q.text}</div>
-
             <div className="small">
               A: {q.a} • B: {q.b} • C: {q.c} • D: {q.d}
               <br />
               <b style={{ color: "#10b981" }}>Jawaban benar: {q.correct.toUpperCase()}</b>
             </div>
-
             <button
               className="btn-ghost"
               onClick={() => deleteQuestion(q.id)}
