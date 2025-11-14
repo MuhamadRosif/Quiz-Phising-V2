@@ -220,8 +220,74 @@ body {
   100% { filter: blur(0) brightness(1); }
 }
 
-/* AdminPanel small styles */
-.admin-panel h2, .admin-panel h3 { margin: 0 0 8px 0; }
-.admin-panel .q-card { padding: 12px; background: rgba(255,255,255,0.03); border-radius: 10px; }
-.admin-panel form .input { width: 100%; }
-.admin-panel .small { color: var(--muted); }
+/* ====== ADMIN MOBILE FIX ====== */
+
+/* Card spacing fix */
+.admin-panel {
+  padding: 14px !important;
+}
+
+/* Input full width on mobile */
+@media (max-width: 640px) {
+
+  /* Buttons row */
+  .admin-panel .btn,
+  .admin-panel .btn-ghost {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  /* Login box */
+  .admin-panel input.input {
+    width: 100% !important;
+  }
+
+  /* Make card stacks vertical */
+  .admin-panel .q-card {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  /* Question list buttons */
+  .admin-panel .q-card > div:last-child {
+    flex-direction: row !important;
+    gap: 10px;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  /* Long text wrapping */
+  .admin-panel textarea,
+  .admin-panel input,
+  .admin-panel .q-card {
+    width: 100% !important;
+  }
+
+  /* Form left-right labels fix */
+  .admin-panel form > div {
+    flex-direction: column !important;
+  }
+
+  /* Round + point row */
+  .admin-panel form > div:first-child {
+    gap: 6px !important;
+  }
+
+  /* Options layout */
+  .admin-panel form .input {
+    width: 100% !important;
+  }
+
+  /* Remove forced widths */
+  .admin-panel *[style*="width: 90px"],
+  .admin-panel *[style*="width: 120px"] {
+    width: 100% !important;
+  }
+
+  /* Player cards fix */
+  .admin-panel .player-card {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+}
