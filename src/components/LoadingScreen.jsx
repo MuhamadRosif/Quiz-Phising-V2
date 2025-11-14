@@ -1,35 +1,22 @@
 import React, { useEffect, useState } from "react";
 
 export default function LoadingScreen() {
+  const [startBlurOut, setStartBlurOut] = useState(false);
   const [hide, setHide] = useState(false);
-  const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
-    // Cek apakah user sudah pernah masuk sebelumnya
-    const hasLoadedBefore = localStorage.getItem("quiz_first_load");
+    // Blur in → fokus → glow
+    const t1 = setTimeout(() => {
+      setStartBlurOut(true); // mulai keluar
+    }, 2600); // Durasi dibuat panjang dan cinematic
 
-    // Kalau pernah, langsung skip loading
-    if (hasLoadedBefore) {
-      setHide(true);
-      return;
-    }
-
-    // Simpan bahwa loading sudah pernah muncul
-    localStorage.setItem("quiz_first_load", "true");
-
-    // Fade-out mulai
-    const timer1 = setTimeout(() => {
-      setFadeOut(true);
-    }, 1800);
-
-    // Hilang total
-    const timer2 = setTimeout(() => {
-      setHide(true);
-    }, 2500);
+    const t2 = setTimeout(() => {
+      setHide(true); // hilang total
+    }, 3400);
 
     return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
+      clearTimeout(t1);
+      clearTimeout(t2);
     };
   }, []);
 
@@ -45,50 +32,58 @@ export default function LoadingScreen() {
         alignItems: "center",
         justifyContent: "center",
         zIndex: 99999,
-        opacity: fadeOut ? 0 : 1,
-        transition: "opacity 0.8s ease",
-        background: "linear-gradient(135deg, #0f172a, #1e293b, #0f172a)",
+        backdropFilter: startBlurOut ? "blur(0px)" : "blur(12px)",
+        transition: "backdrop-filter 1.2s ease, opacity 1s ease",
+        opacity: startBlurOut ? 0 : 1,
+        background: "linear-gradient(130deg, #0f172a, #1e293b, #0f172a)",
         backgroundSize: "300% 300%",
-        animation: "gradientMove 6s ease infinite",
+        animation: "gradientMove 7s ease infinite",
       }}
     >
-      {/* Logo */}
+      {/* Logo cinematic */}
       <img
-        src="/logo-university.png"
+        src="/logo.png"
         alt="Loading"
         style={{
-          width: 130,
-          height: 130,
+          width: 150,
+          height: 150,
           objectFit: "contain",
-          borderRadius: 14,
+          borderRadius: 16,
+          filter: startBlurOut ? "blur(6px)" : "blur(0px)",
+          opacity: startBlurOut ? 0 : 1,
+          transition: "opacity 1s ease, filter 1.2s ease",
           animation:
-            "spinLogo 5s linear infinite, pulseGlow 2s infinite ease-in-out, scaleUp 1s ease",
-          boxShadow: "0 0 35px rgba(96,165,250,0.4)",
+            "fadeInScale 1.6s ease forwards, pulseGlow 2.4s infinite ease-in-out",
         }}
       />
 
-      {/* Text */}
+      {/* Text cinematic */}
       <div
         style={{
-          marginTop: 20,
-          fontSize: 19,
+          marginTop: 30,
+          fontSize: 20,
           fontWeight: 500,
           color: "var(--muted)",
-          animation: "floatText 2s infinite ease-in-out",
+          opacity: startBlurOut ? 0 : 1,
+          filter: startBlurOut ? "blur(4px)" : "blur(0px)",
+          animation: "fadeSlideUp 1.8s ease forwards",
+          transition: "opacity 1s ease, filter 1.2s ease",
         }}
       >
         Loading...
       </div>
 
-      {/* Progress Bar */}
+      {/* Progress bar smooth */}
       <div
         style={{
-          width: 180,
+          width: 200,
           height: 6,
           borderRadius: 6,
-          marginTop: 18,
           overflow: "hidden",
+          marginTop: 22,
           background: "rgba(255,255,255,0.08)",
+          opacity: startBlurOut ? 0 : 1,
+          transition: "opacity 1s ease",
         }}
       >
         <div
@@ -96,12 +91,12 @@ export default function LoadingScreen() {
             width: "100%",
             height: "100%",
             background: "var(--accent)",
-            animation: "progressAnim 1.7s infinite",
+            animation: "progressSmooth 2s infinite ease-in-out",
           }}
         />
       </div>
 
-      {/* CSS Animations */}
+      {/* KEYFRAMES */}
       <style>
         {`
           @keyframes gradientMove {
@@ -110,35 +105,31 @@ export default function LoadingScreen() {
             100% { background-position: 0% 50%; }
           }
 
-          @keyframes spinLogo {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+          @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.65); filter: blur(12px); }
+            50% { opacity: 0.6; transform: scale(0.85); filter: blur(4px); }
+            100% { opacity: 1; transform: scale(1); filter: blur(0px); }
           }
 
-          @keyframes scaleUp {
-            0% { transform: scale(0.6); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+          @keyframes fadeSlideUp {
+            0% { opacity: 0; transform: translateY(12px); filter: blur(10px); }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0px); }
           }
 
           @keyframes pulseGlow {
             0%, 100% {
-              box-shadow: 0 0 15px rgba(96,165,250,0.3),
-                          0 0 30px rgba(96,165,250,0.15);
+              box-shadow: 0 0 20px rgba(96,165,250,0.3),
+                          0 0 35px rgba(96,165,250,0.15);
             }
             50% {
-              box-shadow: 0 0 35px rgba(96,165,250,0.6),
-                          0 0 60px rgba(96,165,250,0.3);
+              box-shadow: 0 0 40px rgba(96,165,250,0.6),
+                          0 0 70px rgba(96,165,250,0.3);
             }
           }
 
-          @keyframes floatText {
-            0% { transform: translateY(0); opacity: 0.8; }
-            50% { transform: translateY(-4px); opacity: 1; }
-            100% { transform: translateY(0); opacity: 0.8; }
-          }
-
-          @keyframes progressAnim {
+          @keyframes progressSmooth {
             0% { transform: translateX(-100%); }
+            50% { transform: translateX(20%); }
             100% { transform: translateX(100%); }
           }
         `}
