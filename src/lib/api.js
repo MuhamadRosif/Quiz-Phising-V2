@@ -9,64 +9,31 @@ export async function fetchQuestionsByRound(round) {
 
   if (error) throw error;
 
-  return (data || []).map((d) => ({
-    id: d.id,
-    round: d.round,
-    text: d.text,
-    options: [d.a, d.b, d.c, d.d],
-    answer: ["a", "b", "c", "d"].indexOf(d.correct),
-    points: 10,
+  return data.map((q) => ({
+    ...q,
+    options: typeof q.options === "string" ? JSON.parse(q.options) : q.options,
   }));
 }
 
-export async function fetchSettings() {
-  const { data } = await supabase
-    .from("settings")
-    .select("value")
-    .eq("key", "global");
-
-  if (!data || data.length === 0)
-    return { eliminationPercent: [50, 50] };
-
-  return data[0].value;
-}
-
-export async function saveSettings(key, value) {
-  const { data, error } = await supabase
-    .from("settings")
-    .upsert({ key, value });
+export async function addQuestion(q) {
+  const { data, error } = await supabase.from("questions").insert({
+    round: q.round,
+    text: q.text,
+    options: q.options,
+    answer: q.answer,
+    points: q.points || 10,
+  });
 
   if (error) throw error;
   return data;
 }
 
-export async function savePlayerResult(player) {
-  const { data, error } = await supabase
-    .from("players")
-    .upsert(player)
-    .select();
-
+export async function deleteQuestion(id) {
+  const { error } = await supabase.from("questions").delete().eq("id", id);
   if (error) throw error;
-  return data;
 }
 
-export async function fetchLeaderboard() {
-  const { data, error } = await supabase
-    .from("players")
-    .select("*")
-    .order("total_score", { ascending: false })
-    .order("total_time", { ascending: true });
-
+export async function deleteAllQuestions() {
+  const { error } = await supabase.from("questions").delete().gt("id", 0);
   if (error) throw error;
-  return data || [];
-}
-
-export async function fetchActivePlayers() {
-  const { data, error } = await supabase
-    .from("players")
-    .select("*")
-    .eq("is_active", true);
-
-  if (error) return [];
-  return data || [];
 }
