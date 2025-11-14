@@ -39,7 +39,7 @@ export default function LoadingScreen() {
     >
       {/* LOGO */}
       <img
-        src="/logo-university.png"
+        src="/logo.png"
         alt="logo"
         style={{
           width: 180,
