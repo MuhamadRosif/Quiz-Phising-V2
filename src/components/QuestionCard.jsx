@@ -4,7 +4,7 @@ import {
   fetchSettings,
   savePlayerResult,
   fetchActivePlayers,
-} from "../lib/api";
+} from "./lib/api";
 import QuestionCard from "./QuestionCard";
 import { uid } from "../utils/helpers";
 
