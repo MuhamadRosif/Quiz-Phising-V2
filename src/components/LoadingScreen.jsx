@@ -22,7 +22,7 @@ export default function LoadingScreen() {
       }}
     >
       <img
-        src="/logo-university.png"
+        src="/logo.png"
         alt="Loading"
         style={{
           width: 110,
