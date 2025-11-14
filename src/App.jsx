@@ -23,13 +23,13 @@ export default function App() {
       {!loading && (
         <div className="app-container">
 
-          {/* ===================================== */}
-          {/*             RESPONSIVE HEADER          */}
-          {/* ===================================== */}
+          {/* =============================== */}
+          {/*         RESPONSIVE HEADER        */}
+          {/* =============================== */}
 
           <header className="header-responsive">
 
-            {/* LEFT TITLE */}
+            {/* TITLE */}
             <div className="header-title">
               <div className="title-main">Quiz University</div>
               <div className="title-sub">
@@ -37,7 +37,7 @@ export default function App() {
               </div>
             </div>
 
-            {/* DESKTOP NAVIGATION */}
+            {/* DESKTOP NAV */}
             <nav className="nav-desktop">
               <Link to="/" className="btn-ghost">Home</Link>
               <Link to="/leaderboard" className="btn-ghost">Leaderboard</Link>
@@ -48,7 +48,7 @@ export default function App() {
             <button
               className="hamburger"
               onClick={() => setOpenMenu(!openMenu)}
-              aria-label="Toggle navigation menu"
+              aria-label="Toggle menu"
             >
               <div className={openMenu ? "bar rotate1" : "bar"}></div>
               <div className={openMenu ? "bar hide" : "bar"}></div>
@@ -56,39 +56,22 @@ export default function App() {
             </button>
           </header>
 
-          {/* MOBILE DROPDOWN MENU */}
+          {/* MOBILE MENU */}
           {openMenu && (
             <nav className="nav-mobile">
-              <Link
-                to="/"
-                className="nav-item"
-                onClick={() => setOpenMenu(false)}
-              >
+              <Link to="/" className="nav-item" onClick={() => setOpenMenu(false)}>
                 Home
               </Link>
-
-              <Link
-                to="/leaderboard"
-                className="nav-item"
-                onClick={() => setOpenMenu(false)}
-              >
+              <Link to="/leaderboard" className="nav-item" onClick={() => setOpenMenu(false)}>
                 Leaderboard
               </Link>
-
-              <Link
-                to="/admin"
-                className="nav-item"
-                onClick={() => setOpenMenu(false)}
-              >
+              <Link to="/admin" className="nav-item" onClick={() => setOpenMenu(false)}>
                 Admin
               </Link>
             </nav>
           )}
 
-          {/* ===================================== */}
-          {/*                  ROUTES                */}
-          {/* ===================================== */}
-
+          {/* ROUTES */}
           <main style={{ marginTop: 20 }}>
             <Routes>
               <Route path="/" element={<Landing />} />
