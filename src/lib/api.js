@@ -1,5 +1,5 @@
 // src/lib/api.js
-import { supabase } from "../supabaseClient";
+import { supabase } from "./supabaseClient";
 
 /* ================================
    FETCH QUESTIONS BY ROUND
