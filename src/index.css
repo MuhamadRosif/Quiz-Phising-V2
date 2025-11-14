@@ -1,0 +1,11 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: #0f172a;
+  font-family: sans-serif;
+  color: white;
+}
+
+button {
+  cursor: pointer;
+}
