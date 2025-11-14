@@ -137,3 +137,21 @@ export async function fetchActivePlayers() {
 
   return data;
 }
+
+/* ================================
+   FETCH LEADERBOARD  <-- (FIX BUILD ERROR)
+================================ */
+export async function fetchLeaderboard() {
+  const { data, error } = await supabase
+    .from("results")
+    .select("*")
+    .order("score", { ascending: false })
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error("Fetch leaderboard error:", error);
+    return [];
+  }
+
+  return data;
+}
