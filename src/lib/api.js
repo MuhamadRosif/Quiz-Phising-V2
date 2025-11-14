@@ -1,5 +1,9 @@
-import { supabase } from "./supabaseClient";
+// src/lib/api.js
+import { supabase } from "../supabaseClient";
 
+/* ================================
+   FETCH QUESTIONS BY ROUND
+================================ */
 export async function fetchQuestionsByRound(round) {
   const { data, error } = await supabase
     .from("questions")
@@ -7,33 +11,71 @@ export async function fetchQuestionsByRound(round) {
     .eq("round", round)
     .order("id", { ascending: true });
 
-  if (error) throw error;
+  if (error) {
+    console.error("Fetch questions error:", error);
+    return [];
+  }
 
-  return data.map((q) => ({
+  return data.map(q => ({
     ...q,
-    options: typeof q.options === "string" ? JSON.parse(q.options) : q.options,
+    options: typeof q.options === "string" ? JSON.parse(q.options) : q.options
   }));
 }
 
-export async function addQuestion(q) {
-  const { data, error } = await supabase.from("questions").insert({
-    round: q.round,
-    text: q.text,
-    options: q.options,
-    answer: q.answer,
-    points: q.points || 10,
-  });
+/* ================================
+   FETCH ALL QUESTIONS (ADMIN)
+================================ */
+export async function fetchAllQuestions() {
+  const { data, error } = await supabase
+    .from("questions")
+    .select("*")
+    .order("round", { ascending: true })
+    .order("id", { ascending: true });
 
-  if (error) throw error;
-  return data;
+  if (error) {
+    console.error("Fetch all questions:", error);
+    return [];
+  }
+
+  return data.map(q => ({
+    ...q,
+    options: typeof q.options === "string" ? JSON.parse(q.options) : q.options
+  }));
 }
 
+/* ================================
+   ADD QUESTION
+================================ */
+export async function addQuestion(question) {
+  const payload = {
+    ...question,
+    options: JSON.stringify(question.options)
+  };
+
+  const { data, error } = await supabase
+    .from("questions")
+    .insert(payload)
+    .select();
+
+  if (error) {
+    console.error("Add question error:", error);
+    return null;
+  }
+  return data?.[0];
+}
+
+/* ================================
+   DELETE QUESTION
+================================ */
 export async function deleteQuestion(id) {
-  const { error } = await supabase.from("questions").delete().eq("id", id);
-  if (error) throw error;
-}
+  const { error } = await supabase
+    .from("questions")
+    .delete()
+    .eq("id", id);
 
-export async function deleteAllQuestions() {
-  const { error } = await supabase.from("questions").delete().gt("id", 0);
-  if (error) throw error;
+  if (error) {
+    console.error("Delete question error:", error);
+    return false;
+  }
+  return true;
 }
