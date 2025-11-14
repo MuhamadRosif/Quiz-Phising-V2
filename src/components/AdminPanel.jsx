@@ -17,7 +17,18 @@ export default function AdminPanel() {
   // Loading state untuk tombol
   const [loading, setLoading] = useState(false);
 
-  // Load questions on mount
+  // ==========================
+  // Test koneksi Supabase
+  // ==========================
+  useEffect(() => {
+    const testSupabase = async () => {
+      const { data, error } = await supabase.from('questions').select('*').limit(1);
+      console.log("Supabase test fetch:", { data, error });
+    };
+    testSupabase();
+  }, []);
+
+  // Load semua questions
   useEffect(() => {
     fetchQuestions();
   }, []);
@@ -48,29 +59,20 @@ export default function AdminPanel() {
 
       const { data, error } = await supabase
         .from("questions")
-        .insert({
-          text: questionText,
-          a,
-          b,
-          c,
-          d,
-          correct
-        })
-        .select(); // select() biar langsung dapet data yang baru ditambahkan
+        .insert({ text: questionText, a, b, c, d, correct })
+        .select();
 
       if (error) {
         console.error("Error menambahkan soal:", error);
         alert("Gagal menambahkan soal. Cek console.");
       } else {
         alert("Soal berhasil ditambahkan!");
-        // Reset semua input
         setQuestionText("");
         setA("");
         setB("");
         setC("");
         setD("");
         setCorrect("");
-        // Refresh daftar soal
         fetchQuestions();
       }
     } catch (err) {
