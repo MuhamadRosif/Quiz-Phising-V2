@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "../lib/supabaseClient";
 
 export default function AdminPanel() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [password, setPassword] = useState("");
   const [questions, setQuestions] = useState([]);
 
-  // Input Fields
   const [questionText, setQuestionText] = useState("");
   const [a, setA] = useState("");
   const [b, setB] = useState("");
@@ -14,12 +13,11 @@ export default function AdminPanel() {
   const [d, setD] = useState("");
   const [correct, setCorrect] = useState("");
 
-  // Loading state untuk tombol
   const [loading, setLoading] = useState(false);
 
-  // ==========================
+  // ========================
   // Test koneksi Supabase
-  // ==========================
+  // ========================
   useEffect(() => {
     const testSupabase = async () => {
       const { data, error } = await supabase.from('questions').select('*').limit(1);
@@ -28,7 +26,6 @@ export default function AdminPanel() {
     testSupabase();
   }, []);
 
-  // Load semua questions
   useEffect(() => {
     fetchQuestions();
   }, []);
@@ -39,7 +36,7 @@ export default function AdminPanel() {
       console.error("Error fetching questions:", error);
       return;
     }
-    if (data) setQuestions(data);
+    setQuestions(data);
   }
 
   function handleLogin() {
@@ -55,8 +52,6 @@ export default function AdminPanel() {
 
     setLoading(true);
     try {
-      console.log("Menambahkan soal:", { questionText, a, b, c, d, correct });
-
       const { data, error } = await supabase
         .from("questions")
         .insert({ text: questionText, a, b, c, d, correct })
@@ -67,12 +62,7 @@ export default function AdminPanel() {
         alert("Gagal menambahkan soal. Cek console.");
       } else {
         alert("Soal berhasil ditambahkan!");
-        setQuestionText("");
-        setA("");
-        setB("");
-        setC("");
-        setD("");
-        setCorrect("");
+        setQuestionText(""); setA(""); setB(""); setC(""); setD(""); setCorrect("");
         fetchQuestions();
       }
     } catch (err) {
