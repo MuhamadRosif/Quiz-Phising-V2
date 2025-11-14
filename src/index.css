@@ -8,6 +8,11 @@
   justify-content: space-between;
   padding: 14px 4px;
   margin-bottom: 10px;
+
+  /* FIX PUTIH */
+  background: var(--bg);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  backdrop-filter: blur(12px);
 }
 
 /* TITLE */
@@ -30,7 +35,7 @@
   gap: 12px;
 }
 
-/* ORIGINAL BUTTON COLORS (RESTORED) */
+/* BUTTONS */
 .btn {
   background: var(--accent);
   color: #06202b;
@@ -40,7 +45,6 @@
   font-weight: 600;
   text-decoration: none;
 }
-
 .btn-ghost {
   background: transparent;
   border: 1px solid rgba(255,255,255,0.09);
@@ -63,7 +67,7 @@
   gap: 6px;
   cursor: pointer;
 }
-.hamburger .bar {
+.bar {
   width: 28px;
   height: 3px;
   border-radius: 4px;
@@ -71,14 +75,14 @@
   transition: 0.32s ease;
 }
 .rotate1 {
-  transform: rotate(45deg) translateY(8px);
+  transform: rotate(45deg) translate(6px, 6px);
   background: var(--accent);
 }
 .hide {
   opacity: 0;
 }
 .rotate2 {
-  transform: rotate(-45deg) translateY(-8px);
+  transform: rotate(-45deg) translate(6px, -6px);
   background: var(--accent);
 }
 
@@ -92,8 +96,6 @@
   margin-top: 10px;
   animation: fadeDownMenu 0.25s ease-out;
 }
-
-/* MOBILE ITEMS = SAME COLOR AS DESKTOP BUTTONS */
 .nav-mobile .nav-item {
   padding: 10px 12px;
   border-radius: 8px;
@@ -102,13 +104,12 @@
   background: rgba(255,255,255,0.06);
   margin-bottom: 8px;
   border: 1px solid rgba(255,255,255,0.08);
-  font-size: 15px;
 }
 .nav-mobile .nav-item:last-child {
   margin-bottom: 0;
 }
 
-/* SMALL DROPDOWN ANIMATION */
+/* DROPDOWN ANIMATION */
 @keyframes fadeDownMenu {
   from {
     opacity: 0;
@@ -120,7 +121,7 @@
   }
 }
 
-/* RESPONSIVE RULES */
+/* RESPONSIVE */
 @media (max-width: 700px) {
   .nav-desktop {
     display: none;
