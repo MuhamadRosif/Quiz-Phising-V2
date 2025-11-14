@@ -219,3 +219,9 @@ body {
   0% { filter: blur(18px) brightness(0.9); }
   100% { filter: blur(0) brightness(1); }
 }
+
+/* AdminPanel small styles */
+.admin-panel h2, .admin-panel h3 { margin: 0 0 8px 0; }
+.admin-panel .q-card { padding: 12px; background: rgba(255,255,255,0.03); border-radius: 10px; }
+.admin-panel form .input { width: 100%; }
+.admin-panel .small { color: var(--muted); }
