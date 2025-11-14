@@ -61,6 +61,7 @@ export async function addQuestion(question) {
     console.error("Add question error:", error);
     return null;
   }
+
   return data?.[0];
 }
 
@@ -93,6 +94,45 @@ export async function fetchSettings() {
   if (error) {
     console.error("Fetch settings error:", error);
     return null;
+  }
+
+  return data;
+}
+
+/* ================================
+   SAVE PLAYER RESULT
+================================ */
+export async function savePlayerResult(playerName, score, round) {
+  const { data, error } = await supabase
+    .from("results")
+    .insert({
+      name: playerName,
+      score,
+      round,
+      created_at: new Date().toISOString(),
+    })
+    .select();
+
+  if (error) {
+    console.error("Save result error:", error);
+    return null;
+  }
+
+  return data?.[0];
+}
+
+/* ================================
+   FETCH ACTIVE PLAYERS
+================================ */
+export async function fetchActivePlayers() {
+  const { data, error } = await supabase
+    .from("players")
+    .select("*")
+    .order("id", { ascending: true });
+
+  if (error) {
+    console.error("Fetch active players error:", error);
+    return [];
   }
 
   return data;
