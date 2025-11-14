@@ -1,176 +1,138 @@
-import { useEffect, useState } from "react";
+// src/components/AdminPanel.jsx
+import React, { useEffect, useState } from "react";
 import {
   addQuestion,
   deleteQuestion,
-  deleteAllQuestions,
-  fetchQuestionsByRound,
+  fetchAllQuestions
 } from "../lib/api";
 
-const ADMIN_PASS = "admin123";
-
 export default function AdminPanel() {
-  const [auth, setAuth] = useState(false);
-  const [round, setRound] = useState(1);
   const [questions, setQuestions] = useState([]);
-
   const [form, setForm] = useState({
+    round: 1,
     text: "",
     a: "",
     b: "",
     c: "",
     d: "",
     answer: 0,
-    points: 10,
+    points: 10
   });
 
-  async function load() {
-    const q = await fetchQuestionsByRound(round);
+  async function loadQuestions() {
+    const q = await fetchAllQuestions();
     setQuestions(q);
   }
 
-  async function handleAdd() {
+  useEffect(() => {
+    loadQuestions();
+  }, []);
+
+  async function handleAdd(e) {
+    e.preventDefault();
+
     const payload = {
-      round,
+      round: Number(form.round),
       text: form.text,
       options: [form.a, form.b, form.c, form.d],
       answer: Number(form.answer),
-      points: Number(form.points),
+      points: Number(form.points)
     };
 
-    await addQuestion(payload);
-    await load();
-
-    setForm({ text: "", a: "", b: "", c: "", d: "", answer: 0, points: 10 });
+    const ok = await addQuestion(payload);
+    if (ok) {
+      alert("Soal ditambahkan!");
+      loadQuestions();
+    }
   }
 
   async function handleDelete(id) {
-    await deleteQuestion(id);
-    load();
-  }
+    if (!confirm("Hapus soal ini?")) return;
 
-  async function handleDeleteAll() {
-    if (!confirm("Hapus semua soal?")) return;
-    await deleteAllQuestions();
-    load();
-  }
-
-  // Load setiap ganti babak
-  useEffect(() => {
-    if (auth) load();
-  }, [auth, round]);
-
-  // LOGIN ADMIN
-  if (!auth) {
-    return (
-      <div className="card" style={{ maxWidth: 380, margin: "50px auto" }}>
-        <h2>Admin Login</h2>
-        <input
-          className="input"
-          type="password"
-          placeholder="Password admin"
-          onKeyDown={(e) =>
-            e.key === "Enter" &&
-            e.target.value === ADMIN_PASS &&
-            setAuth(true)
-          }
-        />
-      </div>
-    );
+    const ok = await deleteQuestion(id);
+    if (ok) {
+      alert("Dihapus!");
+      loadQuestions();
+    }
   }
 
   return (
-    <div className="admin-panel">
-      <div className="card">
-        <h2>Tambah Soal</h2>
+    <div className="text-white p-4">
+      <h1 className="text-xl font-bold mb-4">Admin Panel</h1>
 
-        <select
-          className="input"
-          value={round}
-          onChange={(e) => setRound(Number(e.target.value))}
-        >
-          <option value={1}>Babak 1</option>
-          <option value={2}>Babak 2</option>
-          <option value={3}>Babak 3</option>
-        </select>
+      {/* ADD QUESTION */}
+      <form onSubmit={handleAdd} className="space-y-2 p-4 bg-gray-800 rounded-lg">
+        <h2 className="font-bold">Tambah Soal</h2>
+
+        <input
+          placeholder="Babak (round)"
+          type="number"
+          className="p-2 w-full bg-gray-700"
+          value={form.round}
+          onChange={(e) => setForm({ ...form, round: e.target.value })}
+        />
 
         <textarea
-          className="input"
-          placeholder="Tulis soal..."
+          placeholder="Isi soal"
+          className="p-2 w-full bg-gray-700"
           value={form.text}
           onChange={(e) => setForm({ ...form, text: e.target.value })}
         />
 
-        <input
-          className="input"
-          placeholder="Pilihan A"
-          value={form.a}
-          onChange={(e) => setForm({ ...form, a: e.target.value })}
-        />
-        <input
-          className="input"
-          placeholder="Pilihan B"
-          value={form.b}
-          onChange={(e) => setForm({ ...form, b: e.target.value })}
-        />
-        <input
-          className="input"
-          placeholder="Pilihan C"
-          value={form.c}
-          onChange={(e) => setForm({ ...form, c: e.target.value })}
-        />
-        <input
-          className="input"
-          placeholder="Pilihan D"
-          value={form.d}
-          onChange={(e) => setForm({ ...form, d: e.target.value })}
-        />
+        {["a", "b", "c", "d"].map((key, idx) => (
+          <input
+            key={idx}
+            placeholder={`Pilihan ${key.toUpperCase()}`}
+            className="p-2 w-full bg-gray-700"
+            value={form[key]}
+            onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+          />
+        ))}
 
-        <select
-          className="input"
+        <input
+          placeholder="Jawaban benar (0=A,1=B,2=C,3=D)"
+          type="number"
+          className="p-2 w-full bg-gray-700"
           value={form.answer}
           onChange={(e) => setForm({ ...form, answer: e.target.value })}
-        >
-          <option value="0">Jawaban: A</option>
-          <option value="1">Jawaban: B</option>
-          <option value="2">Jawaban: C</option>
-          <option value="3">Jawaban: D</option>
-        </select>
+        />
 
-        <button className="btn" onClick={handleAdd} style={{ marginTop: 12 }}>
-          Tambah Soal
+        <input
+          placeholder="Points"
+          type="number"
+          className="p-2 w-full bg-gray-700"
+          value={form.points}
+          onChange={(e) => setForm({ ...form, points: e.target.value })}
+        />
+
+        <button className="bg-green-500 p-2 rounded w-full">
+          Tambahkan
         </button>
+      </form>
 
-        <button
-          className="btn-ghost"
-          style={{ marginTop: 10, color: "red" }}
-          onClick={handleDeleteAll}
-        >
-          Hapus Semua Soal ❌
-        </button>
-      </div>
-
-      <h2 style={{ marginTop: 20 }}>Daftar Soal</h2>
-
-      {questions.map((q) => (
-        <div key={q.id} className="q-card">
-          <b>{q.text}</b>
-          <div className="small">
-            A: {q.options[0]} <br />
-            B: {q.options[1]} <br />
-            C: {q.options[2]} <br />
-            D: {q.options[3]} <br />
-            <b>Jawaban benar: {["A", "B", "C", "D"][q.answer]}</b>
-          </div>
-
-          <button
-            onClick={() => handleDelete(q.id)}
-            className="btn-ghost"
-            style={{ color: "red" }}
+      {/* LIST OF QUESTIONS */}
+      <div className="mt-6">
+        <h2 className="font-bold mb-2">Daftar Soal</h2>
+        {questions.map((q) => (
+          <div
+            key={q.id}
+            className="bg-gray-700 p-3 rounded-lg mb-2 flex justify-between items-center"
           >
-            Hapus
-          </button>
-        </div>
-      ))}
+            <div>
+              <p className="font-bold">
+                Babak {q.round} — Soal {q.id}
+              </p>
+              <p>{q.text}</p>
+            </div>
+            <button
+              className="bg-red-500 p-2 rounded"
+              onClick={() => handleDelete(q.id)}
+            >
+              Hapus
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
