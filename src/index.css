@@ -2,7 +2,6 @@
 /*     RESPONSIVE HEADER     */
 /* ========================= */
 
-/* Wrapper */
 .header-responsive {
   display: flex;
   align-items: center;
@@ -11,34 +10,51 @@
   margin-bottom: 10px;
 }
 
-/* Title (Left) */
+/* TITLE */
 .header-title {
   display: flex;
   flex-direction: column;
-  gap: 2px;
 }
-
 .title-main {
   font-size: 22px;
   font-weight: 700;
 }
-
 .title-sub {
   font-size: 13px;
   color: var(--muted);
 }
 
-/* Desktop Navigation */
+/* DESKTOP NAV */
 .nav-desktop {
   display: flex;
   gap: 12px;
 }
 
-/* Mobile Hamburger */
+/* ORIGINAL BUTTON COLORS (RESTORED) */
+.btn {
+  background: var(--accent);
+  color: #06202b;
+  border: 0;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.09);
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+/* HAMBURGER */
 .hamburger {
   display: none;
-  width: 36px;
-  height: 32px;
+  width: 38px;
+  height: 34px;
   background: transparent;
   border: 0;
   padding: 0;
@@ -47,16 +63,13 @@
   gap: 6px;
   cursor: pointer;
 }
-
 .hamburger .bar {
-  width: 26px;
+  width: 28px;
   height: 3px;
   border-radius: 4px;
   background: var(--muted);
   transition: 0.32s ease;
 }
-
-/* Hamburger animation */
 .rotate1 {
   transform: rotate(45deg) translateY(8px);
   background: var(--accent);
@@ -69,31 +82,33 @@
   background: var(--accent);
 }
 
-/* Mobile Dropdown */
+/* MOBILE MENU */
 .nav-mobile {
   display: flex;
   flex-direction: column;
   background: var(--card);
   border-radius: 10px;
-  padding: 12px;
+  padding: 14px;
   margin-top: 10px;
   animation: fadeDownMenu 0.25s ease-out;
 }
 
+/* MOBILE ITEMS = SAME COLOR AS DESKTOP BUTTONS */
 .nav-mobile .nav-item {
-  padding: 10px 6px;
+  padding: 10px 12px;
   border-radius: 8px;
   text-decoration: none;
   color: #e6eef8;
-  background: rgba(255, 255, 255, 0.05);
-  margin-bottom: 6px;
+  background: rgba(255,255,255,0.06);
+  margin-bottom: 8px;
+  border: 1px solid rgba(255,255,255,0.08);
+  font-size: 15px;
 }
-
 .nav-mobile .nav-item:last-child {
   margin-bottom: 0;
 }
 
-/* Mobile Animation */
+/* SMALL DROPDOWN ANIMATION */
 @keyframes fadeDownMenu {
   from {
     opacity: 0;
@@ -105,12 +120,11 @@
   }
 }
 
-/* RESPONSIVE BREAKPOINT */
+/* RESPONSIVE RULES */
 @media (max-width: 700px) {
   .nav-desktop {
     display: none;
   }
-
   .hamburger {
     display: flex;
   }
