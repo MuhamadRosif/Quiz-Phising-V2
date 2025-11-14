@@ -1,27 +1,36 @@
 import React, { useEffect, useState } from "react";
 
-export default function LoadingScreen({ onFinish }) {
-  const [show, setShow] = useState(true);
+export default function LoadingScreen() {
+  const [hide, setHide] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShow(false);
-      onFinish();
-    }, 1800); // durasi 1.8 detik, lebih smooth
-
+    const timer = setTimeout(() => setHide(true), 1500);
     return () => clearTimeout(timer);
   }, []);
 
-  if (!show) return null;
-
   return (
-    <div className="loading-screen">
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "var(--bg)",
+        display: hide ? "none" : "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 9999,
+        transition: "opacity 0.6s ease",
+      }}
+    >
       <img
         src="/logo-university.png"
-        alt="University Logo"
-        className="loading-logo"
+        alt="Loading"
+        style={{
+          width: 110,
+          height: 110,
+          opacity: hide ? 0 : 1,
+          transition: "opacity 0.6s ease",
+        }}
       />
-      <div className="loading-text">Loading Quiz...</div>
     </div>
   );
 }
