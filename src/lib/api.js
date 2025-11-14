@@ -74,6 +74,21 @@ export async function deleteQuestion(id) {
     .eq("id", id);
 
   if (error) {
+
+     export async function fetchSettings() {
+  const { data, error } = await supabase
+    .from("settings")
+    .select("*")
+    .single();
+
+  if (error) {
+    console.error("Fetch settings error:", error);
+    return null;
+  }
+
+  return data;
+}
+
     console.error("Delete question error:", error);
     return false;
   }
